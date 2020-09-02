@@ -4,77 +4,69 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 
 const gitAPI = 'https://api.github.com/';
-const user = 'moonstripe11';
 
 const questions = [
     {
         type: 'input',
         name: 'username',
-        message: 'github user:'
+        message: 'What is your GitHub username? (required)'
     },
 
     {
         type: 'input',
         name: 'repository',
-        message: 'github repo name:'
+        message: 'What is the name of the Github repository? (required)'
 
     },
 
     {
         type: 'input',
         name: 'projectName',
-        message: 'project title:'
+        message: 'What is the project title? (required)'
 
     },
 
     {
         type: 'input',
         name: 'description',
-        message: 'project description:'
+        message: 'Describe the project: (required)'
 
     },
 
     {
         type: 'input',
         name: 'installation',
-        message: 'installation instructions:'
+        message: 'How do you install this project? (required)'
 
     },
 
     {
         type: 'input',
         name: 'usage',
-        message: 'usage guide:'
+        message: 'How do you use this project? (required)'
 
     },
 
     {
         type: 'input',
         name: 'license',
-        message: 'license:'
+        message: 'License: (required)'
 
     },
 
     {
         type: 'input',
         name: 'contributing',
-        message: 'how to contribute:'
+        message: 'How can people contribute? (optional)'
 
     },
 
     {
         type: 'input',
         name: 'tests',
-        message: 'test (optional):'
+        message: 'What are some tests for your project? (optional)'
 
-    },
-
-    {
-        type: 'input',
-        name: 'questions',
-        message: 'frequently asked questions (optional):'
-
-    },
+    }
 
 
 ];
@@ -87,47 +79,63 @@ let promptElements = [];
 
 function init() {
 //prompt
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'username',
-            message: 'moonstripe11'
-        },
-        {
-            type: 'input',
-            name: 'repository',
-            message: 'proj1'
-        }
-    ]).then( async answers => {
+    inquirer.prompt(questions).then( async answers => {
 
+        //pull from git
         email = await getGitEmail(answers);
         userInfo = await getGitAvatar(answers);
 
-        console.log(email);
+        // project title and description
+        promptElements.push(mdEle('title', answers.projectName));
+        promptElements.push(mdEle('paragraph', answers.description));
 
-        promptElements.push(mdEle('title', answers.repository));
-        promptElements.push(mdEle('paragraph', answers.username));
-
+        // table of contents
         promptElements.push(mdEle('subtitle', 'Table of Contents'));
         promptElements.push(mdEle('content', 'Installation'));
         promptElements.push(mdEle('content', 'Usage'));
         promptElements.push(mdEle('content', 'License'));
+        if (answers.contributing) {
+            promptElements.push(mdEle('content', 'Contributing'));
+        };
+        if (answers.tests) {
+            promptElements.push(mdEle('content', 'Tests'));
+        };
 
+        // installation
         promptElements.push(mdEle('subtitle', 'Installation'));
-        promptElements.push(mdEle('paragraph', 'Clone this repository, and run "index.html."'));
+        promptElements.push(mdEle('paragraph', answers.installation));
 
-
+        // usage
         promptElements.push(mdEle('subtitle', 'Usage'));
-        promptElements.push(mdEle('paragraph', 'Mouseover points on the graph to see the Coin price and relevant news articles.'));
+        promptElements.push(mdEle('paragraph', answers.usage));
 
-
+        // license
         promptElements.push(mdEle('subtitle', 'License'));
-        promptElements.push(mdEle('paragraph', 'MIT License'));
+        promptElements.push(mdEle('paragraph', answers.license));
 
-        promptElements.push(mdEle('badge', `https://img.shields.io/github/contributors/${answers.username}/${answers.repository}`))
+        // contributors
+        if (answers.contributing) {
+            promptElements.push(mdEle('subtitle', 'Contributing'));
+            promptElements.push(mdEle('paragraph', answers.contributing));
+        };
 
+        // tests
+        if (answers.tests) {
+            promptElements.push(mdEle('subtitle', 'Tests'));
+            promptElements.push(mdEle('paragraph', answers.tests));
+        };
+
+        // questions
+        promptElements.push(mdEle('subtitle', 'Questions'));
+        promptElements.push(mdEle('paragraph', `If you have any questions, please refer them to [${email}](mailto:${email}).\n`));
         promptElements.push(mdEle('image', userInfo[1]));
 
+        // badges
+        promptElements.push(mdEle('badge', `https://img.shields.io/github/contributors/${answers.username}/${answers.repository}`));
+        promptElements.push(mdEle('badge', `https://img.shields.io/github/followers/${answers.username}?label=Follow&style=social`));
+        promptElements.push(mdEle('badge', `https://img.shields.io/static/v1?label=${userInfo[0]}&message=approved&color=success`));
+
+        // final write
         fs.writeFile('README.md', promptElements.join(''), (err) => {
             if (err) throw err;
             console.log('The file has been saved!');
@@ -142,24 +150,23 @@ function init() {
 const mdEle = (type, content) => {
     switch (type) {
         case 'title':
-            return `# ${content}\n`
+            return `# ${content}\n`;
         case 'subtitle':
-            return `## ${content}\n`
+            return `## ${content}\n`;
         case 'paragraph':
-            return `${content}\n`
+            return `${content}\n`;
         case 'image':
-            return `<img src="${content}" alt="drawing" width="150"/>\n`
+            return `<img src="${content}" alt="drawing" width="150"/><br><br>`;
         case 'content':
             let lC = content.toLowerCase()
-            return `* [${content}](#${lC})\n`
+            return `* [${content}](#${lC})\n`;
         case 'badge':
-            return `![](${content})\n`
+            return `![](${content})\n`;
     }
 }
 
 // git API functions
 const getGitEmail = async (answers) => {
-    let email;
 
     const response = await axios.get(`https://api.github.com/users/${answers.username}/events`)
         .catch(error => console.log(error));
