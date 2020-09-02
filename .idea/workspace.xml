@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ea4fbed9-621a-4653-b9f2-f3aef5b497fe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/homeWork9.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Develop/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Develop/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Develop/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/Develop/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +45,7 @@
       <workItem from="1598991595378" duration="3321000" />
       <workItem from="1598995095655" duration="8780000" />
       <workItem from="1599011590531" duration="2856000" />
-      <workItem from="1599022785619" duration="313000" />
+      <workItem from="1599022785619" duration="792000" />
     </task>
     <servers />
   </component>
